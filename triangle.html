@@ -45,7 +45,7 @@
                 fragmentShader: document.getElementById("fragmentShader").textContent
             }))
             const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
+            scene.add(mesh); //도형추가
 
             renderer.render(scene, camera); //랜더링은 색칠, 색칠하려면 카메라가 필요함
         </script>
