@@ -76,10 +76,10 @@
             //const mesh = new THREE.Mesh(geometry, material);
             //scene.add(mesh); //도형추가
             //const points = new THREE.Points(geometry, material);
-            //scene.add(points);
+            //scene.add(points); //점 추가
 
             const line = new THREE.Line(geometry, material);
-            scene.add(line);
+            scene.add(line); //선 추가
 
             renderer.render(scene, camera); //랜더링은 색칠, 색칠하려면 카메라가 필요함
         </script>
