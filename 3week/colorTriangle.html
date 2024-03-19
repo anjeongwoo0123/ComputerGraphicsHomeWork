@@ -1,0 +1,104 @@
+<!DOCTYPE html> <!-- 문서타입: html-->
+<html>
+    <head>
+        <meta charset="utf-8"> 
+        <title>20195195 안정우 3주차 실습(1)</title> <!-- 제목-->
+    </head>
+    <body>
+        <script type="x-shader/x-vertex" id="vertexShader">
+            attribute vec4 vColor;
+            varying vec4 fColor;
+            void main(){
+              gl_Position = vec4(position, 1.0);
+              fColor = vColor;
+            }
+        </script>
+        <!--R,G,B,투명도 값-->
+        <script type="x-shader/x-fragment" id="fragmentShader"> 
+            varying vec4 fColor;
+            void main(){
+                gl_FragColor = fColor; 
+            }
+        </script>
+        <script type="module">
+            import * as THREE from 'https://unpkg.com/three/build/three.module.js'; // THREE에 있는 모든 라이브러리를 불러오기
+            
+            const scene = new THREE.Scene(); //장면 만들기
+            scene.background = new THREE.Color(0x00ffff); //배경의 색을 지정하기 , 
+            //2자리 씩 r,g,b로 끊어서 '2의8승' 256개의 색 비율을 정함
+
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); //왼쪽,오른쪽,위,아래,z축(앞,뒤), 깊이
+
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(512,512); //화면
+            document.body.appendChild(renderer.domElement); // 트리를 만들기, 우선탐색을 적용하여 
+            
+            const vertices = new Float32Array([ //삼각형 꼭짓점의 x,y,z 좌표
+                -0.5, -0.5, 0,
+                 0.5, -0.5, 0,
+                 0.5, 0.5, 0,
+                 -0.5, 0.5, 0
+         ]);
+            const colors = new Float32Array([
+                1.0, 0.0, 0.0, 1.0,
+                0.0, 1.0, 0.0, 1.0,
+                0.0, 0.0, 1.0, 1.0,
+                0.5, 0.5, 0.5, 1.0
+            ]);
+            const indices = [
+                0, 1, 2, 
+                2 ,3 ,0
+            ];
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setIndex(indices);
+            geometry.setAttribute('position' , new THREE.Float32BufferAttribute(vertices, 3)); //꼭짓점의 개수
+            geometry.setAttribute('vColor', new THREE.Float32BufferAttribute(colors, 4));
+            //const material = new THREE.MeshBasicMaterial({ color: 0xff0000});
+            const material = new THREE.ShaderMaterial(({
+                vertexShader: document.getElementById("vertexShader").textContent,
+                fragmentShader: document.getElementById("fragmentShader").textContent
+            }))
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh); //도형추가
+
+            mesh.rendererOrder = 0;
+
+            const lienVertices = new Float32Array([
+                -0.5, -0.5, 0,
+                 0.5, -0.5, 0,
+                 0.5, 0.5, 0,
+                 -0.5, 0.5, 0
+            ]);
+
+            const lienColors = new Float32Array([
+                0.0, 0.0, 0.0, 1.0,
+                0.0, 0.0, 0.0, 1.0,
+                0.0, 0.0, 0.0, 1.0
+            ]);
+
+            const lineIndices= [
+                0, 1, 2, 3, 0
+            ]
+
+            const lineGeometry = new THREE.BufferGeometry();
+            lineGeometry.setIndex(lineIndices);
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(lienVertices,3));
+            lineGeometry.setAttribute('color', new THREE.Float32BufferAttribute(lienColors,4));
+
+            const lineMaterial = new THREE.ShaderMaterial({
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+            });
+
+            const line = new THREE.Line(lineGeometry, lineMaterial);
+            
+            line.rendererOrder = 1;
+
+            scene.add(line); //선 추가
+
+            renderer.render(scene, camera); //랜더링은 색칠, 색칠하려면 카메라가 필요함
+        </script>
+
+    </body>
+</html>
